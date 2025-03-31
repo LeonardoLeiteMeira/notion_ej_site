@@ -1,7 +1,7 @@
 export default function NotionBenefits() {
     return (
         <section className="section">
-        <h3 className="section-title">Abaixo seguem alguns benefícios que vocês terão ao usar o Notion PRO:</h3>
+        <h3 className="section-title">Abaixo seguem alguns benefícios que vocês terão ao usar o Notion na versão Pro:</h3>
         <p className="text"><strong>Ferramenta centralizada:</strong> Não tenha mais a necessidade de ter várias ferramentas para gerenciar seu negócio.</p>
         <p className="text"><strong>Gestão de acessos simples:</strong> Adicione e remova usuários de forma fácil e eficiente.</p>
         <p className="text"><strong>Personalização:</strong> Modifique de acordo com a necessidade da sua empresa.</p>
