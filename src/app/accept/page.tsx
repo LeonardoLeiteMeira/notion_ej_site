@@ -7,6 +7,7 @@ import NotionBenefits from '@/components/notionBenefits';
 import EjVideo from '@/components/ejVideo';
 
 export default function Accept() {
+  const status = "Accept";
   const [token, setToken] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
 
