@@ -6,11 +6,17 @@ import NotionBenefits from "@/components/notionBenefits";
 import { useState, useEffect } from "react";
 import checkboxeOption from "@/models/types/checkboxOption";
 import Checkboxs from "@/components/checkboxs";
+import { submitLeadStatus } from "@/http/submit";
+import Contact from "@/components/contact";
+import { useRouter } from "next/navigation";
 
 export default function deny() {
   const status = "Refused";
-  const [token, setToken] = useState<string | null>(null);
-  const [name, setName] = useState<string | null>(null);
+  const router = useRouter();
+  const [token, setToken] = useState<string>('');
+  const [name, setName] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const [checkboxes, setCheckboxes] = useState<Array<checkboxeOption>>([
     {"id":"freeAlternative", "isChecked":false, "label":"Já usamos outra ferramenta que atende nossas necessidades de forma gratuita"},
     {"id":"paidAlternative", "isChecked":false, "label":"Já usamos outra ferramenta paga que atende nossas necessidades"},
@@ -31,25 +37,34 @@ export default function deny() {
   };
 
   const handleSubmit = async () => {
+    if (!token) return;
+
     const selectedOptions = checkboxes.filter(item => item.isChecked);
-    const userResponse = {
-      selectedOptions,
-      feedback
-    }
+    const selectedOptionsArr = selectedOptions.map(item => item.label);
 
-    const requestParms = {
-      status,
-      token
-    }
+    setLoading(true);
+    setMessage(null);
 
-    console.log(userResponse);
-    console.log(requestParms);
-  }
+    try {
+      await submitLeadStatus(token, status, feedback, selectedOptionsArr);
+      setMessage('Resposta enviada com sucesso!');
+    } catch (err) {
+      setMessage('Erro ao enviar resposta. Tente novamente.');
+    } finally {
+      setLoading(false);
+      setTimeout(() => setMessage(null), 4000);
+    }
+  };
 
   useEffect(() => {
-    const parms = new URLSearchParams(window.location.search)
-    setToken(parms.get('token'));
-    setName(parms.get('name'));
+    const parms = new URLSearchParams(window.location.search);
+    const token = parms.get('token');
+    if(!token){
+      router.push('/error')
+      return;
+    }
+    setToken(token);
+    setName(parms.get('name')??"");
   }, []);
 
   return (
@@ -68,12 +83,16 @@ export default function deny() {
           onChange={handleFeedbackChange}
         ></textarea>
         <p className="text">Para salvar, clique no botão abaixo:</p>
-        <button className="btn-primary" onClick={handleSubmit}>Continuar</button>
+        <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
+          {loading ? 'Enviando...' : 'Continuar'}
+        </button>
+        {message && <p className="text feedback-message">{message}</p>}
       </section>
 
       <AboutMe />
       <NotionBenefits />
       <EjVideo />
+      <Contact/>
     </main>
   );
 } 
