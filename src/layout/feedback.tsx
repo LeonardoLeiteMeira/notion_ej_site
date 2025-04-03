@@ -56,8 +56,12 @@ export default function Feedback(props: Props) {
         try {
             await submitLeadStatus(token, status, feedback, selectedOptionsArr);
             setMessage({isError: false, message: 'Resposta enviada com sucesso!', show: true});
-        } catch (err) {
-            setMessage({isError: true, message: 'Erro ao enviar resposta. Tente novamente.', show: true});
+        } catch (err: any){
+            let message = 'Erro ao enviar resposta. Tente novamente.';
+            if(err.status == 400){
+                message = err.response.data;
+            }
+            setMessage({isError: true, message, show: true});
         } finally {
             setLoading(false);
             setTimeout(
