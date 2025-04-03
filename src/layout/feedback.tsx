@@ -23,7 +23,6 @@ export default function Feedback(props: Props) {
 
     const router = useRouter();
     const [token, setToken] = useState<string>('');
-    const [name, setName] = useState<string>('');
     const [feedback, setFeedback] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<FeedbackMessage>({isError: false, message: null, show: false});
@@ -35,7 +34,6 @@ export default function Feedback(props: Props) {
         router.push('/error')
         return;
         }
-        setName(parms.get('name')??'');
         setToken(token);
     }, []);
 
