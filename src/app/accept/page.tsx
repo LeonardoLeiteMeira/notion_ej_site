@@ -10,6 +10,7 @@ import checkboxeOption from '@/models/types/checkboxOption';
 import Checkboxs from '@/components/checkboxs';
 import Contact from '@/components/contact';
 import { useRouter } from "next/navigation";
+import FeedbackMessage from '@/models/types/feedback_meesage';
 
 export default function Accept() {
   const status = "Accept";
@@ -18,7 +19,7 @@ export default function Accept() {
   const [name, setName] = useState<string>('');
   const [feedback, setFeedback] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<FeedbackMessage>({isError: false, message: null});
   const [checkboxes, setCheckboxes] = useState<Array<checkboxeOption>>([
     {"id":"alreadyUsed", "isChecked":false, "label":"Já usamos o Notion oficialmente de alguma forma."},
     {"id":"someMembersUse", "isChecked":false, "label":"Alguns membros usam o Notion na vida pessoal."},
@@ -52,16 +53,19 @@ export default function Accept() {
     const selectedOptionsArr = selectedOptions.map(item => item.label);
 
     setLoading(true);
-    setMessage(null);
+    setMessage((old) => ({ ...old, message: null }));
 
     try {
       await submitLeadStatus(token, status, feedback, selectedOptionsArr);
-      setMessage('Resposta enviada com sucesso!');
+      setMessage({isError: false, message: 'Resposta enviada com sucesso!'});
     } catch (err) {
-      setMessage('Erro ao enviar resposta. Tente novamente.');
+      setMessage({isError: true, message: 'Erro ao enviar resposta. Tente novamente.'});
     } finally {
       setLoading(false);
-      setTimeout(() => setMessage(null), 4000);
+      setTimeout(
+        () => setMessage((old) => ({ ...old, message: null })), 
+        4000
+      );
     }
   };
 
@@ -86,7 +90,7 @@ export default function Accept() {
         <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
           {loading ? 'Enviando...' : 'Continuar'}
         </button>
-        {message && <p className={`text snackbar ${message?.includes('erro')?"error":"success"}`}>{message}</p>}
+        {message && <p className={`text snackbar ${message.isError?"error":"success"}`}>{message.message}</p>}
       </section>
 
       <AboutMe />
