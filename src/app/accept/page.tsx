@@ -86,7 +86,7 @@ export default function Accept() {
         <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
           {loading ? 'Enviando...' : 'Continuar'}
         </button>
-        {message && <p className="text feedback-message">{message}</p>}
+        {message && <p className={`text snackbar ${message?.includes('erro')?"error":"success"}`}>{message}</p>}
       </section>
 
       <AboutMe />

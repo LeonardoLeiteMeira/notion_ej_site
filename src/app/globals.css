@@ -39,6 +39,26 @@ html {
   font-family: inherit;
 }
 
+.snackbar {
+  padding: 1rem;
+  border-radius: 2rem;
+  background-color: rgb(242, 241, 241);;
+}
+
+.error {
+  color: red;
+}
+.error::before {
+  content: "❌  ";
+}
+
+.success::before {
+  content: "✅  ";
+}
+.success {
+  color: green;
+}
+
 .btn-primary {
   background-color: #36c866;
   color: white;
@@ -49,6 +69,11 @@ html {
   cursor: pointer;
   transition: background-color 0.2s;
   margin: 1rem 0;
+}
+
+.btn-primary:disabled {
+  background-color: #4f6c49;
+  color: #bebebe
 }
 
 .btn-primary:hover {
