@@ -30,7 +30,7 @@ export default function Feedback(props: Props) {
     useEffect(() => {
         const parms = new URLSearchParams(window.location.search)
         const token = parms.get('token')
-        if(!token){
+        if(!token || token === 'null'){
             router.push('/error')
             return;
         }
