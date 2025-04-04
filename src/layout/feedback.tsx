@@ -31,11 +31,11 @@ export default function Feedback(props: Props) {
         const parms = new URLSearchParams(window.location.search)
         const token = parms.get('token')
         if(!token){
-        router.push('/error')
-        return;
+            router.push('/error')
+            return;
         }
         setToken(token);
-    }, []);
+    }, [router]);
 
     const onChangeCheckbox = (option: checkboxeOption) => {
         setCheckboxValue(prev => prev.map(item => item.id === option.id ? {...item, isChecked: !option.isChecked} : item));
@@ -56,13 +56,16 @@ export default function Feedback(props: Props) {
         try {
             await submitLeadStatus(token, status, feedback, selectedOptionsArr);
             setMessage({isError: false, message: 'Resposta enviada com sucesso!', show: true});
-        } catch (err: any){
-            let message = 'Erro ao enviar resposta. Tente novamente.';
-            if(err.status == 400){
-                message = err.response.data;
+        } catch (err: unknown) {
+            let errorMessage = 'Erro ao enviar resposta. Tente novamente.';
+            if (err && typeof err === 'object' && 'status' in err) {
+              const errorObj = err as { status?: number; response?: { data?: string } };
+              if (errorObj.status === 400 && errorObj.response?.data) {
+                errorMessage = errorObj.response.data;
+              }
             }
-            setMessage({isError: true, message, show: true});
-        } finally {
+            setMessage({ isError: true, message: errorMessage, show: true });
+          } finally {
             setLoading(false);
             setTimeout(
                 () => setMessage((old) => ({ ...old, show: false })), 

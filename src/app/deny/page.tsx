@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import checkboxeOption from "@/models/types/checkboxOption";
 import Feedback from "@/layout/feedback";
 
-export default function deny() {
+export default function Deny() {
   const [name, setName] = useState<string>();
 
   const [checkboxes, setCheckboxes] = useState<Array<checkboxeOption>>([
